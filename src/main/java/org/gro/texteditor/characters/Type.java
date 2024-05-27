@@ -5,5 +5,5 @@ public enum Type {
     LOWERCASE,
     NUMBER,
     SPECIAL,
-    SHIFTED;
+    SHIFTED
 }
