@@ -11,60 +11,42 @@ public final class Special {
                          width = Properties.width;
 
     public final static Map<java.lang.Character, java.lang.Character> mappings = Map.ofEntries(
-            Map.entry('1', '!'),
-            Map.entry('2', '@'),
-            Map.entry('3', '#'),
-            Map.entry('4', '$'),
-            Map.entry('5', '%'),
-            Map.entry('6', '^'),
-            Map.entry('7', '&'),
-            Map.entry('8', '*'),
-            Map.entry('9', '('),
-            Map.entry('0', ')')
+            Map.entry('1', '!'), Map.entry('2', '@'), Map.entry('3', '#'),
+            Map.entry('4', '$'), Map.entry('5', '%'), Map.entry('6', '^'),
+            Map.entry('7', '&'), Map.entry('8', '*'), Map.entry('9', '('),
+            Map.entry('0', ')'), Map.entry('/', '?'), Map.entry(' ', ' ')
     );
 
     private static GraphicsContext canvas;
 
     public static void draw(int character, GraphicsContext draw) {
         canvas = draw;
+        canvas.getCanvas().setWidth(0.70 * width);
 
         switch(character) {
             case ' ': canvas.getCanvas().setWidth(0.70 * width); break;
-            case '!': exclamation(); break;
-            case '@': at(); break;
-            case '#': hashtag(); break;
-            case '$': dollar(); break;
-            case '%': percent(); break;
-            case '^': carrot(); break;
-            case '&': ampersand(); break;
-            case '*': asterisk(); break;
-            case '(': lparen(); break;
-            case ')': rparen(); break;
-            case '-': hyphen(); break;
-            case '_': underscore(); break;
-            case '=': equals(); break;
-            case '+': plus(); break;
-            case '{': lbrace(); break;
-            case '}': rbrace(); break;
-            case '[': lbracket(); break;
-            case ']': rbracket(); break;
-            case '\\': backslash(); break;
-            case '/': forwardslash(); break;
-            case '|': pipe(); break;
-            case '<': langle(); break;
-            case '>': rangle(); break;
-            case '?': question(); break;
-            case ',': comma(); break;
-            case '.': period(); break;
-            case ';': semicolon(); break;
-            case ':': colon(); break;
-            case '\'': apostraphe(); break;
-            case '"': quote(); break;
+            case '!': exclamation(); break;         case '@': at();           break;
+            case '#': hashtag();     break;         case '$': dollar();       break;
+            case '%': percent();     break;         case '^': carrot();       break;
+            case '=': equals();      break;         case '+': plus();         break;
+            case '(': lparen();      break;         case ')': rparen();       break;
+            case '{': lbrace();      break;         case '}': rbrace();       break;
+            case '[': lbracket();    break;         case ']': rbracket();     break;
+            case '|': pipe();        break;         case '<': langle();       break;
+            case '>': rangle();      break;         case '?': question();     break;
+            case ',': comma();       break;         case '.': period();       break;
+            case ';': semicolon();   break;         case ':': colon();        break;
+            case '-': hyphen();      break;         case '_': underscore();   break;
+            case '&': ampersand();   break;         case '*': asterisk();     break;
+            case '\'': apostraphe(); break;         case '"': quote();        break;
+            case '\\': backslash();  break;         case '/': forwardslash(); break;
         }
     }
 
     private static void exclamation() {
-
+        canvas.getCanvas().setWidth(0.40 * width);
+        canvas.strokeArc(0.175 * width, 0.80 * height, 0.05 * width, 0.05 * height, 0, 360, ArcType.ROUND);
+        canvas.strokeLine(0.20 * width, 0.15 * height, 0.20 * width, 0.65 * height);
     }
 
     private static void at() {
@@ -154,7 +136,7 @@ public final class Special {
     private static void comma() {
         canvas.getCanvas().setWidth(0.40 * width);
         canvas.strokeArc(0.175 * width, 0.80 * height, 0.05 * width, 0.05 * height, 0, 360, ArcType.ROUND);
-        canvas.strokeArc(0.175 * width, 0.85 * height, 0.05 * width, 0.05 * height, 270, 90, ArcType.OPEN);
+        canvas.strokeLine(0.225 * width, 0.85 * height, 0.15 * width, 0.90 * height);
     }
 
     private static void period() {
@@ -163,7 +145,9 @@ public final class Special {
     }
 
     private static void question() {
-
+        canvas.strokeArc(0.325 * width, 0.80 * height, 0.05 * width, 0.05 * height, 0, 360, ArcType.ROUND);
+        canvas.strokeLine(0.35 * width, 0.55 * height, 0.35 * width, 0.65 * height);
+        canvas.strokeArc (0.10 * width, 0.15 * height, 0.50 * width, 0.35 * height, 270, 270, ArcType.OPEN);
     }
 
     private static void pipe() {

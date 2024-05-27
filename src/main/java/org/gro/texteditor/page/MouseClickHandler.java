@@ -15,6 +15,5 @@ public class MouseClickHandler {
 
     public void handle(MouseEvent event) {
         event.consume();
-        System.out.println(event);
     }
 }
