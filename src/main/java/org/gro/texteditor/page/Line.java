@@ -11,18 +11,19 @@ public class Line extends HBox {
     double length = 0;
 
     public void write(Character character) {
-        children.add(character);
+        children.add(children.size(), character);
     }
     public void write(int index, Character character) {
+        length += character.length;
         children.add(index, character);
     }
 
-    public void delete() {
-        if (!children.isEmpty())
-            length -= ((Character) children.removeLast()).length;
-    }
-    public void delete(int index) {
-        if (children.size() > index) children.remove(index);
+    public Character delete() {
+        if (!children.isEmpty()) {
+            Character last = (Character) children.removeLast();
+            length -= last.length;
+            return last;
+        } return null;
     }
 
 }

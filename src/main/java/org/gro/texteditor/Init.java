@@ -18,7 +18,7 @@ public class Init {
 
         Scene scene = new Scene(layout, 1100, 600);
         scene.setOnKeyPressed(new KeyPressHandler(page)::handle);
-        scene.addEventFilter(MouseEvent.ANY, new MouseClickHandler(page, layout)::handle);
+        scene.addEventFilter(MouseEvent.ANY, new MouseClickHandler(page)::handle);
 
         return scene;
     }

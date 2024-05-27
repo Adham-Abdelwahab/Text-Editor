@@ -29,18 +29,15 @@ public class Page extends VBox {
             next.write(new Character(' ', Type.SPECIAL));
 
         if (current != null) {
-            Character previous = (Character) current.children.getLast();
+            Character previous = current.delete();
             while (previous.code != ' ') {
-                next.children.add(4, current.children.removeLast());
-                next.length += previous.length;
-                previous = (Character) current.children.getLast();
+                next.write(4, previous);
+                previous = current.delete();
             }
         }
 
         current = next;
-        children.add(index, current);
+        children.add(index, next);
     }
-    public void setLine() {
 
-    }
 }
