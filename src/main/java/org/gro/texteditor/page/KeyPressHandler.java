@@ -19,14 +19,13 @@ public class KeyPressHandler {
         int code = keycode.getCode();
         boolean shift = event.isShiftDown(), control = event.isControlDown();
 
-        if (page.current.length > Properties.lineLimit) page.newLine();
+        if (page.current.length > Properties.lineLimit && code != 10) page.newLine();
         switch(code) {
             case 8: // backspace
                 if (page.current.children.size() == 4 && page.activeLineNumber() != 0) {
                     page.children.removeLast();
                     page.current = (Line) page.children.getLast();
-                } else page.current.delete();
-                break;
+                } else page.current.delete(); break;
             case 10: // enter
                 page.current.write(new Character(' ', Type.SPECIAL));
                 page.newLine(); break;

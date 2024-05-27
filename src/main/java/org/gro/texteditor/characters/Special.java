@@ -14,7 +14,8 @@ public final class Special {
             Map.entry('1', '!'), Map.entry('2', '@'), Map.entry('3', '#'),
             Map.entry('4', '$'), Map.entry('5', '%'), Map.entry('6', '^'),
             Map.entry('7', '&'), Map.entry('8', '*'), Map.entry('9', '('),
-            Map.entry('0', ')'), Map.entry('/', '?'), Map.entry(' ', ' ')
+            Map.entry('0', ')'), Map.entry('/', '?'), Map.entry(' ', ' '),
+            Map.entry((char)222, '"')
     );
 
     private static GraphicsContext canvas;
@@ -38,7 +39,7 @@ public final class Special {
             case ';': semicolon();   break;         case ':': colon();        break;
             case '-': hyphen();      break;         case '_': underscore();   break;
             case '&': ampersand();   break;         case '*': asterisk();     break;
-            case '\'': apostraphe(); break;         case '"': quote();        break;
+            case 222: apostraphe(); break;          case '"': quote();        break;
             case '\\': backslash();  break;         case '/': forwardslash(); break;
         }
     }
@@ -159,7 +160,9 @@ public final class Special {
     }
 
     private static void apostraphe() {
-
+        canvas.getCanvas().setWidth(0.40 * width);
+        canvas.strokeArc(0.175 * width, 0.15 * height, 0.05 * width, 0.05 * height, 0, 360, ArcType.ROUND);
+        canvas.strokeLine(0.225 * width, 0.20 * height, 0.15 * width, 0.25 * height);
     }
 
     private static void backslash() {
