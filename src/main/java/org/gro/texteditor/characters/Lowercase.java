@@ -69,14 +69,14 @@ final class Lowercase {
 
     private static void i() {
         canvas.getCanvas().setWidth(0.40 * width);
-        canvas.strokeLine(0.20 * width, 0.40 * height, 0.20 * width, 0.85 * height);
+        canvas.strokeLine(0.20 * width, 0.45 * height, 0.20 * width, 0.85 * height);
         canvas.strokeArc (0.17 * width, 0.30 * height, 0.06 * width, 0.06 * height, 0, 360, ArcType.CHORD);
     }
 
     private static void j() {
         canvas.getCanvas().setWidth(0.40 * width);
         canvas.strokeArc (0.22 * width, 0.30 * height, 0.06 * width, 0.06 * height, 0, 360, ArcType.CHORD);
-        canvas.strokeLine(0.25 * width, 0.40 * height, 0.25 * width, 0.80 * height);
+        canvas.strokeLine(0.25 * width, 0.45 * height, 0.25 * width, 0.80 * height);
         canvas.strokeArc(-0.10 * width, 0.60 * height, 0.35 * width, 0.38 * height, 250, 120, ArcType.OPEN);
     }
 
