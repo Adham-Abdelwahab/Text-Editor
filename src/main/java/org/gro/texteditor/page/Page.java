@@ -13,6 +13,12 @@ public class Page extends VBox {
 
     public Page() {
         newLine();
+        // Padding lines
+        for(int i = 0; i < 18; i ++) {
+            Line line = new Line();
+            line.write(new Character(' ', Type.SPECIAL));
+            children.add(line);
+        }
     }
 
     public int activeLineNumber() {
