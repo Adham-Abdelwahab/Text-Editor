@@ -22,4 +22,6 @@ public class Properties {
                           width = 15.0;
     public static double lineLimit = 1040 - 2 * width;
 
+    static String path = "C:\\Users\\Adham\\Desktop\\";
+
 }
