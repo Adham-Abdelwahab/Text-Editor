@@ -75,7 +75,11 @@ public final class Special {
     }
 
     private static void asterisk() {
-
+        canvas.getCanvas().setWidth(0.40 * width);
+        canvas.strokeLine(0.175 * width, 0.15  * height, 0.225 * width, 0.15  * height);
+        canvas.strokeLine(0.20  * width, 0.125 * height, 0.20  * width, 0.175 * height);
+        canvas.strokeLine(0.18  * width, 0.13  * height, 0.22  * width, 0.17  * height);
+        canvas.strokeLine(0.18  * width, 0.17  * height, 0.22  * width, 0.13  * height);
     }
 
     private static void underscore() {

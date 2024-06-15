@@ -9,7 +9,6 @@ public class TextEditor extends Application {
     @Override
     public void start(Stage stage) {
         Scene init = Init.newPage();
-        stage.setResizable(false);
         stage.setScene(init);
         stage.show();
     }

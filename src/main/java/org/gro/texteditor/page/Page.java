@@ -9,12 +9,14 @@ import org.gro.texteditor.characters.Type;
 public class Page extends VBox {
 
     ObservableList<Node> children = this.getChildren();
+    int lineNumber = -1;
     Line current;
 
     public Page() {
         newLine();
+
         // Padding lines
-        for(int i = 0; i < 18; i ++) {
+        for(int i = 0; i < 5; i ++) {
             Line line = new Line();
             line.write(new Character(' ', Type.SPECIAL));
             children.add(line);
@@ -26,12 +28,13 @@ public class Page extends VBox {
     }
 
     public void newLine() {
-        int index = activeLineNumber() + 1;
+        lineNumber += 1;
         Line next = new Line();
 
-        for (char character : String.valueOf(index).toCharArray())
+        char[] lineNumberChars = String.valueOf(lineNumber).toCharArray();
+        for (char character : lineNumberChars)
             next.write(new Character(character, Type.NUMBER));
-        for (int i = String.valueOf(index).length(); i < 4; i++)
+        for (int i = lineNumberChars.length; i < 4; i++)
             next.write(new Character(' ', Type.SPECIAL));
 
         if (current != null) {
@@ -42,8 +45,8 @@ public class Page extends VBox {
             }
         }
 
+        children.add(activeLineNumber() + 1, next);
         current = next;
-        children.add(index, next);
     }
 
 }
