@@ -15,7 +15,8 @@ public final class Special {
             Map.entry('4', '$'), Map.entry('5', '%'), Map.entry('6', '^'),
             Map.entry('7', '&'), Map.entry('8', '*'), Map.entry('9', '('),
             Map.entry('0', ')'), Map.entry('/', '?'), Map.entry(' ', ' '),
-            Map.entry((char)222, '"')
+            Map.entry(',', '<'),
+            Map.entry( '\'', '"'), Map.entry((char)222, '"')
     );
 
     private static GraphicsContext canvas;

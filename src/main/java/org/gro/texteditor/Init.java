@@ -1,6 +1,5 @@
 package org.gro.texteditor;
 
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -22,7 +21,7 @@ import org.gro.texteditor.page.Page;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Init {
@@ -30,6 +29,8 @@ public class Init {
     Stage stage;
 
     HashMap<Character, KeyCode> keyCodeLookup;
+    ArrayList<Character> specialKeys;
+    ArrayList<Character> specialValues;
 
     Text error;
     TextArea input;
@@ -46,6 +47,9 @@ public class Init {
         for(KeyCode keyCode : keyCodes)
             keyCodeLookup.put((char) keyCode.getCode(), keyCode);
 
+        specialKeys   = new ArrayList<>(Special.mappings.keySet());
+        specialValues = new ArrayList<>(Special.mappings.values());
+
         error = new Text("FILE NOT FOUND");
         error.setFont(Font.font(20));
         error.setFill(Color.RED);
@@ -60,11 +64,11 @@ public class Init {
         layout.setAlignment(Pos.CENTER);
         layout.setSpacing(10);
 
-        button.setOnAction(_ -> submit());
-        input.setOnKeyPressed(keyEvent -> {
+        button.setOnAction(_ -> readFile());
+        input.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
             if (keyEvent.getCode().getCode() == 10) {
                 keyEvent.consume();
-                submit();
+                readFile();
             }
         });
 
@@ -78,68 +82,57 @@ public class Init {
         stage.show();
     }
 
-    private void submit() {
+    private void readFile() {
         stage.hide();
 
-        String fileContent;
+        Path path = Path.of(Properties.path + input.getText());
 
-        try { fileContent = Files.readString(Path.of(Properties.path + input.getText())); }
-        catch (IOException e) {
+        try {
+            Scene newPage;
+            if (input.getText().isEmpty()) newPage = newPage("");
+            else newPage = newPage(Files.readString(path));
+
+            stage.setScene(newPage);
+            stage.show();
+        } catch (IOException e) {
             error.setVisible(true);
             stage.show();
-            throw new RuntimeException(e);
         }
-
-        Scene newPage = newPage();
-        EventHandler<? super KeyEvent> onKeyPressed = newPage.getOnKeyPressed();
-        Page page = (Page) ((ScrollPane)newPage.getRoot()).getContent();
-
-        for (char letter : fileContent.toCharArray()) {
-            if (letter == 13) continue;
-            boolean shiftDown = false;
-            if(Special.mappings.get(letter) != null) shiftDown = false;
-            else letter = specialLookup(letter);
-            String toString = String.valueOf(letter);
-            if (letter >= 97 && letter <= 122) letter -= 32;
-            else shiftDown = true;
-
-            KeyCode keyCode = keyCodeLookup.get(letter);
-            KeyEvent event = new KeyEvent(
-                    openFileScene, page,
-                    KeyEvent.KEY_PRESSED,
-                    keyCode.getChar(), toString, keyCode,
-                    shiftDown, false, false, false
-            );
-            System.out.println(event);
-            onKeyPressed.handle(event);
-        }
-
-        stage.setScene(newPage);
-        stage.show();
     }
 
-    private Character specialLookup(char character) {
-        Collection<Character> characters = Special.mappings.values();
-        if (!characters.contains(character)) return character;
-
-        int index = 0;
-        for(Character c : characters)
-            if (c == character) {
-                return (char) Special.mappings.keySet().toArray()[index];
-            } else index++;
-        return ' ';
-    }
-
-    public Scene newPage() {
+    public Scene newPage(String fileContent) {
         Page page = new Page();
         ScrollPane layout = new ScrollPane(page);
+        KeyPressHandler keyPressHandler = new KeyPressHandler(page);
 
         layout.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         Scene scene = new Scene(layout, 1100, 600);
-        scene.setOnKeyPressed(new KeyPressHandler(page)::handle);
+        scene.setOnKeyPressed(keyPressHandler::handle);
         scene.addEventFilter(MouseEvent.ANY, new MouseClickHandler(page)::handle);
+
+        for (char letter : fileContent.toCharArray()) {
+            if (letter == 13) continue;
+            if (letter == '\'') letter = (char) 222;
+
+            boolean shiftDown = false;
+            if (letter >= 97 && letter <= 122) letter -= 32;
+            else if (letter >= 65 && letter <= 90) shiftDown = true;
+            else if (specialValues.contains(letter)) {
+                letter = specialKeys.get(specialValues.indexOf(letter));
+                shiftDown = true;
+            }
+
+            KeyCode keyCode = keyCodeLookup.get(letter);
+            KeyEvent event = new KeyEvent(
+                    openFileScene, page,
+                    KeyEvent.KEY_PRESSED,
+                    keyCode.getChar(), String.valueOf(letter), keyCode,
+                    shiftDown, false, false, false
+            );
+            keyPressHandler.handle(event);
+        }
 
         return scene;
     }
