@@ -21,9 +21,10 @@ public class Character extends Canvas {
             case SPECIAL: length = 11.2; break;
         }
         // SPECIAL + SHIFTED + LOWERCASE
-        if ((".," + "!'" + "ijl")
+        if ((".,;" + "!':|" + "ijl")
                 .contains(String.valueOf(this.code)))
             length = 6.4;
+        if (this.code == '#') length = 15.2;
 
         switch(type) {
             case LOWERCASE: Lowercase.draw(this.code, canvas); break;

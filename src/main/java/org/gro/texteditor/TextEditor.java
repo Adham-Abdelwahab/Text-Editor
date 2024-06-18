@@ -7,7 +7,7 @@ public class TextEditor extends Application {
 
     @Override
     public void start(Stage stage) {
-        new Init(stage).openFile();
+        new Initialize(stage).openFile();
     }
 
     public static void main(String[] args) {

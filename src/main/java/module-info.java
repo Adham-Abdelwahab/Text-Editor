@@ -15,8 +15,5 @@ module org.gro.texteditor {
     opens org.gro.texteditor to javafx.fxml;
     exports org.gro.texteditor;
     exports org.gro.texteditor.page;
-    exports org.gro.texteditor.cursor;
     exports org.gro.texteditor.characters;
-    opens org.gro.texteditor.page to javafx.fxml;
-    opens org.gro.texteditor.cursor to javafx.fxml;
 }

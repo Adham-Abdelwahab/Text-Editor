@@ -1,6 +1,7 @@
 package org.gro.texteditor;
 
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -13,24 +14,25 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.gro.texteditor.characters.Character;
 import org.gro.texteditor.characters.Special;
-import org.gro.texteditor.page.KeyPressHandler;
-import org.gro.texteditor.page.MouseClickHandler;
-import org.gro.texteditor.page.Page;
+import org.gro.texteditor.page.*;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Stack;
 
-public class Init {
+public class Initialize {
 
     Stage stage;
 
-    HashMap<Character, KeyCode> keyCodeLookup;
-    ArrayList<Character> specialKeys;
-    ArrayList<Character> specialValues;
+    HashMap<java.lang.Character, KeyCode> keyCodeLookup;
+    ArrayList<java.lang.Character> specialKeys;
+    ArrayList<java.lang.Character> specialValues;
 
     Text error;
     TextArea input;
@@ -38,10 +40,11 @@ public class Init {
     VBox layout;
     Scene openFileScene;
 
-    public Init(Stage stage) {
+    public Initialize(Stage stage) {
         this.stage = stage;
         stage.setResizable(false);
 
+        // KeyCode lookups
         KeyCode[] keyCodes = KeyCode.values();
         keyCodeLookup = new HashMap<>();
         for(KeyCode keyCode : keyCodes)
@@ -50,6 +53,7 @@ public class Init {
         specialKeys   = new ArrayList<>(Special.mappings.keySet());
         specialValues = new ArrayList<>(Special.mappings.values());
 
+        // Initialize file open scene
         error = new Text("FILE NOT FOUND");
         error.setFont(Font.font(20));
         error.setFill(Color.RED);
@@ -62,7 +66,7 @@ public class Init {
 
         layout = new VBox(error, input, button);
         layout.setAlignment(Pos.CENTER);
-        layout.setSpacing(10);
+        layout.setSpacing(20);
 
         button.setOnAction(_ -> readFile());
         input.addEventFilter(KeyEvent.KEY_PRESSED, keyEvent -> {
@@ -72,7 +76,7 @@ public class Init {
             }
         });
 
-        openFileScene = new Scene(layout, 800, 300);
+        openFileScene = new Scene(layout, 500, 200);
     }
 
     public void openFile() {
@@ -89,8 +93,8 @@ public class Init {
 
         try {
             Scene newPage;
-            if (input.getText().isEmpty()) newPage = newPage("");
-            else newPage = newPage(Files.readString(path));
+            if (input.getText().isEmpty()) newPage = newPage("document.txt", "");
+            else newPage = newPage(input.getText(), Files.readString(path));
 
             stage.setScene(newPage);
             stage.show();
@@ -100,10 +104,27 @@ public class Init {
         }
     }
 
-    public Scene newPage(String fileContent) {
-        Page page = new Page();
+    public static void saveFile(LineFrame frame, String file) {
+        try (FileWriter writer = new FileWriter(Properties.path + file)){
+            StringBuilder fileContent = new StringBuilder();
+            for (Line line : frame.backward) fileContent.append(lineToString(line));
+            for (Node line : frame.lines) fileContent.append(lineToString((Line) line));
+            for (Line line : frame.forward) fileContent.append(lineToString(line));
+            writer.write(fileContent.toString());
+        } catch (IOException _) { System.out.println("Unable to save file " + file); }
+    }
+    private static String lineToString(Line line) {
+        StringBuilder string = new StringBuilder();
+        for (Node character : line.getChildren())
+            string.append(((Character) character).code);
+        string.delete(0, 4); string.append('\n');
+        return string.toString();
+    }
+
+    public Scene newPage(String file, String fileContent) {
+        Page page = new Page(file);
         ScrollPane layout = new ScrollPane(page);
-        KeyPressHandler keyPressHandler = new KeyPressHandler(page);
+        KeyPressHandler keyPressHandler = new KeyPressHandler(page, file);
 
         layout.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);

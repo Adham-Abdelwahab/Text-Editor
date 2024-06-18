@@ -11,6 +11,7 @@ public class Line extends HBox {
     double length = 0;
 
     public void write(Character character) {
+        length += character.length;
         children.add(character);
     }
     public void write(int index, Character character) {

@@ -12,7 +12,7 @@ public class Page extends VBox {
     int lineNumber = -1;
     Line current;
 
-    public Page() {
+    public Page(String path) {
         newLine();
 
         // Padding lines
