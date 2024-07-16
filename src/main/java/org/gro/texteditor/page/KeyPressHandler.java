@@ -8,22 +8,20 @@ import org.gro.texteditor.characters.Type;
 
 public class KeyPressHandler {
 
-    String file;
     Page page;
     LineFrame frame;
 
-    public KeyPressHandler(Page page, String file){
-        this.file = file;
+    public KeyPressHandler(Page page, LineFrame frame) {
         this.page = page;
-        frame = new LineFrame(page.children);
+        this.frame = frame;
     }
 
     public void handle(KeyEvent event) {
         int code = event.getCode().getCode();
         boolean shift = event.isShiftDown(), control = event.isControlDown();
         if (control && code == 'S') {
-            System.out.println("Saving file " + file);
-            Initialize.saveFile(frame, file);
+            System.out.println("Saving file " + page.file);
+            Initialize.saveFile(frame, page.file);
             event.consume();
             return;
         }
@@ -31,26 +29,21 @@ public class KeyPressHandler {
         switch(code) {
             case 8: // backspace
                 int index = page.activeLineNumber();
-                if (page.current.children.size() == 4 && index != 0) {
-                    page.children.remove(index);
-                    page.current = (Line) page.children.get(index - 1);
-                    page.lineNumber -= 1;
-                    frame.shiftUp();
-                } else page.current.delete(); break;
+                if (page.current.children.size() == 4 && index != 0)
+                    deleteLine(index); else page.current.delete(); break;
             case 10: // enter
                 page.current.write(new Character(' ', Type.SPECIAL));
-                page.newLine(); shiftDown(); break;
+                newLine(); break;
             case 16, 17, 37, 39: break; // shift, ctrl, left arrow, right arrow
             case 38: frame.shiftUp(); break; // up arrow
-            case 40: shiftDown(); break; // down arrow
+            case 40: frame.shiftDown(); break; // down arrow
 
             default:
                 Character character = getCharacter(code, shift);
                 page.current.write(character);
         }
-        if (page.current.length > Properties.lineLimit) {
-            page.newLine(); shiftDown();
-        }
+        if (page.current.length > Properties.lineLimit)
+            newLine();
 
         event.consume();
     }
@@ -69,11 +62,38 @@ public class KeyPressHandler {
         return new Character(code, type);
     }
 
-    private void shiftDown(){
-        frame.shiftDown();
-        int linesRemaining = frame.forwardSize();
-        if (linesRemaining <= 5)
-            page.current = (Line)page.children.get(page.children.size() + linesRemaining - 6);
+    private void deleteLine(int index) {
+        redrawLines();
+        page.children.remove(index);
+        page.current = (Line) page.children.get(index - 1);
+        page.lineNumber -= 1;
+        frame.shiftUp();
+        redrawLines();
     }
 
+    private void newLine() {
+        page.newLine();
+        frame.shiftDown();
+        redrawLines();
+    }
+
+    private void redrawLines() {
+        int lineNumber = page.lineNumber + 1;
+        int forwardStackSize = frame.forwardSize();
+        int offset = forwardStackSize > 5 ? 0 : forwardStackSize - 5;
+
+        for (int i = page.activeLineNumber() + 1; i < page.children.size() + offset; i++)
+            redrawNumber((Line) page.children.get(i), lineNumber++);
+        for (int i = forwardStackSize - 1; i >= 5; i--)
+            redrawNumber(frame.forward.get(i), lineNumber++);
+    }
+
+    private void redrawNumber(Line redraw, int lineNumber) {
+        redraw.children.remove(0, 4);
+        char[] nextNumber = String.valueOf(lineNumber).toCharArray();
+        for (int j = 0; j < nextNumber.length; j++)
+            redraw.write(j, new Character(nextNumber[j], Type.NUMBER));
+        for (int k = nextNumber.length; k < 4; k++)
+            redraw.write(k, new Character(' ', Type.SPECIAL));
+    }
 }
