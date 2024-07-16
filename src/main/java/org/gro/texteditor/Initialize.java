@@ -24,7 +24,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Stack;
 
 public class Initialize {
 
@@ -123,15 +122,16 @@ public class Initialize {
 
     public Scene newPage(String file, String fileContent) {
         Page page = new Page(file);
+        LineFrame frame = new LineFrame(page.getChildren());
         ScrollPane layout = new ScrollPane(page);
-        KeyPressHandler keyPressHandler = new KeyPressHandler(page, file);
+        KeyPressHandler keyPressHandler = new KeyPressHandler(page, frame);
 
         layout.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         layout.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         Scene scene = new Scene(layout, 1100, 600);
         scene.setOnKeyPressed(keyPressHandler::handle);
-        scene.addEventFilter(MouseEvent.ANY, new MouseClickHandler(page)::handle);
+        scene.addEventFilter(MouseEvent.ANY, new MouseClickHandler(page, frame)::handle);
 
         for (char letter : fileContent.toCharArray()) {
             if (letter == 13) continue;

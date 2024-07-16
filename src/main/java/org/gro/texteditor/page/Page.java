@@ -9,10 +9,12 @@ import org.gro.texteditor.characters.Type;
 public class Page extends VBox {
 
     ObservableList<Node> children = this.getChildren();
+    String file;
     int lineNumber = -1;
     Line current;
 
-    public Page(String path) {
+    public Page(String file) {
+        this.file = file;
         newLine();
 
         // Padding lines

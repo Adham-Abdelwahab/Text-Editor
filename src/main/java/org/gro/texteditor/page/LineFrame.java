@@ -23,5 +23,6 @@ public class LineFrame {
         if (lines.size() > 20) backward.push((Line) lines.removeFirst());
     }
 
+    public int backwardSize() { return backward.size(); }
     public int forwardSize() { return forward.size(); }
 }
